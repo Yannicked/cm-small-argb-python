@@ -1,0 +1,38 @@
+set amount of leds:
+80, 0d, 02, 01, 04, num_leds
+
+set spectrum:
+80, 0b, 02, 01, 01, <speed 0-4>, 10, ff, ff, ff, ff
+
+set breathing:
+80, 0b, 02, 01, 04, <speed 0-4>, 10, <lum>, <r>, <g>, <b>
+
+demo mode:
+80, 0b, 02, 01, 06, <speed 0-4>, 10, ff, ff, ff, ff
+
+zone: 0x01
+mode:
+    00: motherboard
+    01: spectrum
+    02: reload
+    03: recoil
+    04: breathing
+    05: refill
+    06: demo
+    07: adressable mode
+    08: static
+    09: off?
+    0a: off?
+    0b: off?
+    0c: off?
+    0d: off?
+
+set mode to individual:
+80, 0b, 02, 01, 07
+
+
+set led individual:
+00, 10, 02, 01, 30, <r0>, <g0>, <b0>, <r1>, <g1>, <b1>...
+and then:
+01, 00 (Is this meant to be the second packet?)
+82, 00 (Is this meant to be the end packet?)
