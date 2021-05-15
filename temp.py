@@ -4,33 +4,7 @@ import wmi, math, threading
 
 import time
 
-def send_start(output):
-    data = b'\x00\x80\x01\x01\x00\x01'
-    data += b'\x00'*(65-len(data))
-
-    output.send(raw_data = data)
-
-def send_end(output):
-    data = b'\x00\x01'
-    data += b'\x00'*(65-len(data))
-
-    output.send(raw_data = data)
-
-    data = b'\x00\x82'
-    data += b'\x00'*(65-len(data))
-
-    output.send(raw_data = data)
-
-def set_colors(output, colordata):
-    # r g b, r g b, r g b
-    data = b'\x00\x00\x10\x02\x00\x30'
-    data += bytes(colordata)
-
-    data += b'\x00'*(65-len(data))
-
-    output.send(raw_data = data)
-    
-    send_end(output)
+from cm import Led
 
 def make_rgb(r, g, b):
     return [int(r), int(g), int(b)]
@@ -68,14 +42,11 @@ def get_temperature():
     
     return t/n
 
-
-
-
 mintemp = 30
 maxtemp = 65
 temp = mintemp
 
-def brighness_loop(output):
+def brighness_loop(led):
     global temp
     brightness = 0
     brightness_sin = 0
@@ -87,22 +58,17 @@ def brighness_loop(output):
         g = int(max(0, min(1-(temp-0.5)*2,1))*255)
         b = 0
         colors = create_static(r*brightness, g*brightness, b*brightness, 14)
-        set_colors(output, colors)
+        led.set_colors(colors)
         time.sleep(1/15)
 
 def main():
     global temp
-    target_vendor_id = 0x2516
-    device = hid.HidDeviceFilter(vendor_id = target_vendor_id).get_devices()[0]
-    #device.set_raw_data_handler(raw_handler)
-    device.open()
+    
+    led = Led()
+    led.set_led_count(14)
+    led.set_mode(7)
 
-    output = device.find_output_reports()[0]
-
-    send_start(output)
-
-    set_mode(output)
-    t = threading.Thread(target=brighness_loop, args=(output,))
+    t = threading.Thread(target=brighness_loop, args=(led,))
     t.start()
     try:
         while True:
@@ -116,7 +82,6 @@ def main():
     except KeyboardInterrupt:
         pass
 
-    device.close()
 
 
 if __name__ == '__main__':
