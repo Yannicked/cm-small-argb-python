@@ -9,15 +9,16 @@ I am not sure what changed in firmware v008 as the new masterplus software does 
 
 For firmware version v12:
 
-==============
-Setting the amount of leds:
+Setting the amount of leds
+======
 `800d0201{checksum}{amount of leds}`
 the checksum is calculated by doing `ceil(48/{amount of leds})`
 eg: 8 leds: 48/8 = 6
 So the command for 8 leds is: `800d02010608`
 
-==============
-Setting a mode:
+
+Setting a mode
+======
 - first the pc sends:
   `0801010002`
 - The controller confirms with
@@ -38,8 +39,8 @@ where mode:
 - The controller confirms with
   `080b0300{mode}`
 
-==============
-Setting individual leds:
+Setting individual leds
+======
 - First the mode is set to 7
 - The pc sends:
   `0010020030{r1}{g1}{b1}....{r20}{g20}`
